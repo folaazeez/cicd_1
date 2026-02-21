@@ -1,0 +1,97 @@
+name: ci
+
+on:
+    push:
+    pull_request:
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
+jobs:
+    ci:
+        runs-on: ubuntu-22.04
+        permissions:
+            id-token: write
+            contents: read
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+
+            - name: Policy gate (default non-prod)
+              run: python scripts/policy_check.py
+
+            - name: Configure AWS credentials (OIDC)
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: arn:aws:iam::490159260943:role/github-actions-terraform
+                  aws-region: eu-west-2
+
+            - name: Set image URI
+              run: echo "IMAGE_URI=490159260943.dkr.ecr.eu-west-2.amazonaws.com/policy-gate:${{ github.sha }}" >> $GITHUB_ENV
+
+            - name: Set up Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                  terraform_version: "1.6.6"
+                  terraform_wrapper: false
+
+            - name: Terraform fmt (check)
+              working-directory: infra
+              run: terraform fmt -check -diff -recursive
+
+            # ---------- FOUNDATION ----------
+            - name: Terraform init (foundation)
+              working-directory: infra/foundation
+              run: terraform init
+
+            - name: Terraform validate (foundation)
+              working-directory: infra/foundation
+              run: terraform validate
+
+            - name: Terraform plan (foundation)
+              working-directory: infra/foundation
+              run: terraform plan -no-color
+
+            - name: Terraform apply (foundation, main only)
+              if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+              working-directory: infra/foundation
+              run: terraform apply -auto-approve
+
+            # ---------- BUILD & PUSH (main only) ----------
+            - name: Login to Amazon ECR
+              if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Build and push image to ECR (main only)
+              if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+              run: |
+                  docker build -t $IMAGE_URI .
+                  docker push $IMAGE_URI
+
+            # ---------- DEPLOY ----------
+            - name: Terraform init (deploy)
+              working-directory: infra/deploy
+              run: terraform init
+
+            - name: Terraform validate (deploy)
+              working-directory: infra/deploy
+              run: terraform validate
+
+            - name: Terraform plan (deploy)
+              working-directory: infra/deploy
+              run: terraform plan -no-color -var="policy_gate_image=$IMAGE_URI" -var="environment=dev" -var="replica_count=1"
+
+            - name: Terraform apply (deploy, main only)
+              if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+              working-directory: infra/deploy
+              run: terraform apply -auto-approve -var="policy_gate_image=$IMAGE_URI" -var="environment=dev" -var="replica_count=1"
