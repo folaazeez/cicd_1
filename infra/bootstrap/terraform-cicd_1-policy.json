@@ -90,7 +90,10 @@
         "ecr:UntagResource",
         "ecr:ListTagsForResource",
         "ecr:GetAuthorizationToken",
-        "ecr:InitiateLayerUpload"
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload",
+        "ecr:BatchCheckLayerAvailability"
       ],
       "Resource": "*"
     },
