@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = "pipelineguard-chatgpt-fola"
+    bucket         = "cicd1-bucket-fola"
     key            = "platform-foundations/foundation.tfstate"
     region         = "eu-west-2"
-    dynamodb_table = "pipelineguard-chatgpt"
+    dynamodb_table = "cicd1-tbl"
     encrypt        = true
   }
 }
