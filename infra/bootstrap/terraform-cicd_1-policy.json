@@ -87,7 +87,8 @@
         "ecr:PutImageTagMutability",
         "ecr:SetRepositoryPolicy",
         "ecr:TagResource",
-        "ecr:UntagResource"
+        "ecr:UntagResource",
+        "ecr:ListTagsForResource"
       ],
       "Resource": "*"
     },
@@ -118,7 +119,8 @@
         "logs:DeleteLogGroup",
         "logs:DescribeLogGroups",
         "logs:PutRetentionPolicy",
-        "logs:DescribeLogStreams"
+        "logs:DescribeLogStreams",
+        "logs:ListTagsForResource"
       ],
       "Resource": "*"
     },
@@ -134,7 +136,8 @@
         "iam:DetachRolePolicy",
         "iam:ListAttachedRolePolicies",
         "iam:TagRole",
-        "iam:UntagRole"
+        "iam:UntagRole",
+        "iam:ListRolePolicies"
       ],
       "Resource": "arn:aws:iam::490159260943:role/ecsTaskExecutionRole-platform-foundations"
     }
