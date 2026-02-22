@@ -89,7 +89,8 @@
         "ecr:TagResource",
         "ecr:UntagResource",
         "ecr:ListTagsForResource",
-        "ecr:GetAuthorizationToken"
+        "ecr:GetAuthorizationToken",
+        "ecr:InitiateLayerUpload"
       ],
       "Resource": "*"
     },
