@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "policy_gate" {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        awslogs-group         = aws_cloudwatch_log_group.policy_gate.name
+        awslogs-group         = data.terraform_remote_state.foundation.outputs.aws_cloudwatch_log_group_name
         awslogs-region        = var.aws_region
         awslogs-stream-prefix = "ecs"
       }
