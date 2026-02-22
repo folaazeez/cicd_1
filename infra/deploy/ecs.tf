@@ -1,8 +1,3 @@
-resource "aws_cloudwatch_log_group" "policy_gate" {
-  name              = "/ecs/policy-gate"
-  retention_in_days = 7
-}
-
 resource "aws_ecs_task_definition" "policy_gate" {
   family                   = "policy-gate"
   network_mode             = "awsvpc"
