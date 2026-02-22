@@ -5,10 +5,10 @@ provider "aws" {
 data "terraform_remote_state" "foundation" {
   backend = "s3"
   config = {
-    bucket         = "pipelineguard-chatgpt-fola"
+    bucket         = "cicd_1-bucket-fola"
     key            = "platform-foundations/foundation.tfstate"
     region         = "eu-west-2"
-    dynamodb_table = "pipelineguard-chatgpt"
+    dynamodb_table = "cicd_1-tbl"
     encrypt        = true
   }
 }
