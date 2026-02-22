@@ -140,6 +140,12 @@
         "iam:ListRolePolicies"
       ],
       "Resource": "arn:aws:iam::490159260943:role/ecsTaskExecutionRole-platform-foundations"
+    },
+    {
+      "Sid": "EC2Permissions",
+      "Effect": "Allow",
+      "Action": ["ec2:DescribeVpcAttribute"],
+      "Resource": "*"
     }
   ]
 }
