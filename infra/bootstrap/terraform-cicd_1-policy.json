@@ -145,7 +145,11 @@
     {
       "Sid": "EC2Permissions",
       "Effect": "Allow",
-      "Action": ["ec2:DescribeVpcAttribute", "ec2:ModifySubnetAttribute"],
+      "Action": [
+        "ec2:DescribeVpcAttribute",
+        "ec2:ModifySubnetAttribute",
+        "ec2:DescribeNetworkInterfaces"
+      ],
       "Resource": "*"
     }
   ]
