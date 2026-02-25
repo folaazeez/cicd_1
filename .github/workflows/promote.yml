@@ -16,6 +16,12 @@ on:
             replica_count:
                 description: "Desired replica count (required for prod; staging can be blank to default)"
                 required: false
+            dry_run:
+                description: "If true, run plan only"
+                required: true
+                default: "true"
+                type: choice
+                options: ["true", "false"]
 
 jobs:
     deploy:
@@ -84,7 +90,7 @@ jobs:
               with:
                   name: tfplan-${{ inputs.environment }}-${{ inputs.image_tag }}
                   path: infra/deploy/tfplan
-
             - name: Terraform apply (deploy)
+              if: inputs.dry_run != 'true'
               working-directory: infra/deploy
               run: terraform apply -auto-approve tfplan

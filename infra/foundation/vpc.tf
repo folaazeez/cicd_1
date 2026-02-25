@@ -18,6 +18,10 @@ resource "aws_subnet" "public_a" {
   cidr_block              = "10.50.1.0/24"
   availability_zone       = "${var.aws_region}a"
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "platform-foundations"
+  }
 }
 
 resource "aws_route_table" "public" {
